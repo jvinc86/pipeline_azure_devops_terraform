@@ -22,7 +22,7 @@ stages:
     steps:
     - task: Docker@2
       inputs:
-        containerRegistry: 'Vincenup DockerHub'
+        containerRegistry: 'vincenup DockerHub'
         repository: 'vincenup/weatherapi'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
