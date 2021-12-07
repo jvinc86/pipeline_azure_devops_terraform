@@ -7,6 +7,13 @@ terraform {
       version = "=2.5.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name  = "Terraform-RG"
+    storage_account_name = "mystoragetfstate"
+    container_name       = "container-storage-for-tfstate"
+    key                  = "terraform.tfstate"
+  }
 }
 
 # Configure the Microsoft Azure Provider
@@ -46,3 +53,20 @@ resource "azurerm_container_group" "example" {
 
 }
 
+resource "azurerm_storage_account" "storage_for_tfstate" {
+  name                     = "mystoragetfstate"
+  resource_group_name      = azurerm_resource_group.terraform_rg.name
+  location                 = azurerm_resource_group.terraform_rg.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+
+  tags = {
+    environment = "staging"
+  }
+}
+
+resource "azurerm_storage_container" "container_storage" {
+  name                  = "container-storage-for-tfstate"
+  storage_account_name  = azurerm_storage_account.storage_for_tfstate.name
+  container_access_type = "private"
+}
